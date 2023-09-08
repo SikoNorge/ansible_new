@@ -4,13 +4,28 @@
   become: true
   tasks:
 
-  - name: install updates
+  - name: update cache
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution in ["Ubuntu", "Debian"]
 
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for siko
+    tags: always
+    authorized_key:
+      user: siko
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMwVF1CbEahonKPPlOvIhHJM9Acx4f2Gcj7BkGVFNfv8 ansible"
+
+
+- hosts: all
+  become: true
+  tasks:
 
   - name: install apache2 and php package for Ubuntu
     tags: apache,apache2,debian
