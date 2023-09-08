@@ -204,3 +204,39 @@ Paste the following code in:
 
 > default_site.html and index.html doesnt need matching names
 
+<details>
+<summary>Updated version of Playbook V1.2</summary>
+	
+	---
+
+	- hosts: all
+	  become: true
+	  tasks:
+	
+ 	 - name: install updates
+ 	   tags: always
+ 	   apt:
+ 	     upgrade: dist
+ 	     update_cache: yes
+  	  when: ansible_distribution in ["Ubuntu", "Debian"]
+	
+	
+ 	 - name: install apache2 and php package for Ubuntu
+ 	   tags: apache,apache2,debian
+ 	   apt:
+ 	     name:
+  	      - apache2
+  	      - libapache2-mod-php
+  	    state: latest
+  	  when: ansible_distribution in ["Ubuntu", "Debian"]
+	
+ 	 - name: copy default html file for site
+ 	   tags: apache,apache2,debian
+ 	   copy:
+  	    src: default_site.html
+   	   dest: /var/www/Silko/index.html
+  	    owner: root
+    	  group: root
+    	  mode: 0644
+
+</details>
