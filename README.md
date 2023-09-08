@@ -312,3 +312,57 @@ and
 
 Now everytime you set up new servers you will automaticly add the user `siko` and give  him the authority to connect to the server without a password  
 you only have to wirte the sudo password once. The user can also now use `sudo` arguments.  
+
+
+## Roles
+
+We clean up our Playbook to be more organized now.  
+First we have to add some new files to our Project.  
+Make a few new directorys:
+`mkdir roles` , `cd roles` , `mkdir base` , `mkdir web_servers` , `mkdir db_servers` , `mkdir file_servers`  
+
+Add now in every folder another directory called `tasks`  
+And in these task a new file called `main.yml`  
+
+In the `main.yml`file you write your code, what was before in the `site.yml`  
+The `site.yml` will be changed as following:  
+<details>
+<summary>Open me</summary>
+
+	---
+ 	
+	 - hosts: all
+ 	  become: true
+ 	  pre_tasks:
+ 
+ 	  - name: update repository index (Ubuntu)
+     tags: always
+     apt:
+       update_cache: yes
+     changed_when: false
+     when: ansible_distribution == "Ubuntu"
+ 
+ 	- hosts: all
+  	 become: true
+  	 roles:
+     - base
+ 
+	 - hosts: web_servers
+ 	  become: true
+ 	  roles:
+     - web_servers
+ 
+	 - hosts: db_servers
+  	 become: true
+  	 roles:
+     - db_servers
+ 
+	 - hosts: file_servers
+	   become: true
+ 	  roles:
+     - file_servers
+
+</details>
+
+!Allignment in this code are not correct!
+
