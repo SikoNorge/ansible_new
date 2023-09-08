@@ -114,4 +114,4 @@ To install the latest packages add after `name:`
   
  ## Working with diffrent servers
 
-When you work on different server types you should group them in you [Inventory](Inventory).  
+When you work on different server types you should group them in your [Inventory](#Inventory).  
