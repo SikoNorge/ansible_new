@@ -2,10 +2,10 @@
 
 ## Git Commands to commit your work
 
-`git status`
-`git add .`
-`git commit -m "Description"`
-`git push origin main`
+`git status`  
+`git add .`  
+`git commit -m "Description"`  
+`git push origin main`  
 
 
 
@@ -169,4 +169,38 @@ Add `tags: [your tags]` right under `name`
 Now run `ansible-playbook --tags [your tag] --ask-become-pass install_apache.yml`  
 It will only show the processes with the named tag  
 For more tags you can use `--tags "tag1,tag2"`  
+
+## Copying files to the Server  
+
+Create a file in our example it will be an `.html`file.  
+for that we create a new folder in ansible_new  
+`mkdir files`, then go into the file with create a file in my case it is `default_site.html`
+Paste a common html code in it  
+<details>
+	<summary>Click</summary>
+	
+	<html>
+		<head>
+      			<title>Welcome to your_domain!</title>
+  		</head>
+   		<body>
+       			<h1>Success!  The Silko virtual host is working!</h1>
+  		</body>
+	</html>
+ 
+</details>
+  
+To copy files to your server you have to go into your Playbook.
+Paste the following code in:
+
+	- name: copy default html file for site
+ 	  tags: apache,apache2,debian
+    	  copy:
+            src: default_site.html
+	    dest: /var/www/html/index.html
+     	    owner: root
+	    group: root
+	    mode: 0644
+
+> default_site.html and index.html doesnt need matching names
 
