@@ -1,0 +1,8 @@
+- name: copy default html file for site
+  tags: apache,apache2,debian
+  copy:
+    src: default_site.html
+    dest: /var/www/Silko/index.html
+    owner: root
+    group: root
+    mode: 0644

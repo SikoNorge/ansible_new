@@ -1,0 +1,4 @@
+- name: add ssh key for siko
+  authorized_key:
+    user: siko
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMwVF1CbEahonKPPlOvIhHJM9Acx4f2Gcj7BkGVFNfv8 ansible"

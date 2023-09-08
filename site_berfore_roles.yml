@@ -1,0 +1,46 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update cache
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for siko
+    tags: always
+    authorized_key:
+      user: siko
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMwVF1CbEahonKPPlOvIhHJM9Acx4f2Gcj7BkGVFNfv8 ansible"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install apache2 and php package for Ubuntu
+    tags: apache,apache2,debian
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: copy default html file for site
+    tags: apache,apache2,debian
+    copy:
+      src: default_site.html
+      dest: /var/www/Silko/index.html
+      owner: root
+      group: root
+      mode: 0644
