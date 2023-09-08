@@ -1,14 +1,22 @@
 # ansible_new    
 
+## Git Commands to commit your work
+
+`git status`
+`git add .`
+`git commit -m "Description"`
+`git push origin main`
+
+
 
 ### Inventory
 Go into your Ansible folder and add a new document `nano inventory`  
 Your `Inventory` contains all your Server IP's 
 For example:
 
-	[192.0.0.0]
- 	[192.0.0.1]
-  	[192.0.0.2]
+	192.0.0.0
+ 	192.0.0.1
+  	192.0.0.2
   
 Ansible repository
 
@@ -80,13 +88,13 @@ To install the latest packages add after `name:`
 	  tasks:
 	
 	  - name: install apache2 and php package for Ubuntu
- 	   apt:
-  	    name: 
-   	     - apache2
+ 	    apt:
+  	      name: 
+   	        - apache2
 	        - libapache2-mod-php
-   	   state: latest
-   	   update_cache: yes
-   	   when: ansible_distribution in ["Ubuntu", "Debian"]
+   	      state: latest
+   	    update_cache: yes
+   	    when: ansible_distribution in ["Ubuntu", "Debian"]
     
 </details>    
   
@@ -115,3 +123,50 @@ To install the latest packages add after `name:`
  ## Working with diffrent servers
 
 When you work on different server types you should group them in your [Inventory](#Inventory).  
+  
+	[web_servers]
+ 	192.0.0.0
+ 	[db_servers]
+  	192.0.0.1
+  	[file_servers]
+   	192.0.0.2
+  
+Copy your `install_apache.yml`to a new oen `site.yml`  
+`cp install_apache.yml site.yml`  
+Now you can work on certain server with certain things in your [Playbook](#Playbook) via the comment `-host`  
+<details>
+<summary>The new code can look like following:</summary>
+	
+	---
+	
+	- hosts: all
+ 	  become: true
+	  tasks:
+
+   	  -name install updates (Ubunut, Debian)
+      	    apt:
+	      upgrade: dist
+       	      update_cache: yes
+	    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+	- hosts: web_servers
+ 	  become: true
+    	  tasks:
+	  - name: install apache2 and php package for Ubuntu
+ 	    apt:
+  	      name: 
+   	        - apache2
+	        - libapache2-mod-php
+   	   state: latest
+   	   when: ansible_distribution in ["Ubuntu", "Debian"]
+       
+</details>
+
+### Tags
+
+You can add tags to you Playbook to sort your servers  
+Add `tags: [your tags]` right under `name`  
+Now run `ansible-playbook --tags [your tag] --ask-become-pass install_apache.yml`  
+It will only show the processes with the named tag  
+For more tags you can use `--tags "tag1,tag2"`  
+
