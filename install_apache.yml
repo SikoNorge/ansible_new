@@ -4,17 +4,19 @@
   become: true
   tasks:
 
-  - name: update repository index
+  - name: install updates
+    tags: always
     apt:
+      upgrade: dist
       update_cache: yes
     when: ansible_distribution in ["Ubuntu", "Debian"]
-  - name: install apache2 package
-    apt:
-      name: apache2
-      state: latest
-      when: ansible_distribution in ["Ubuntu", "Debian"]
 
-  - name: add php support for apache
+  - name: install apache2 and php package for Ubuntu
+    tags: apache,apache2,debian
     apt:
-      name: libapache2-mod-php
+      name:
+        - apache2
+        - libapache2-mod-php
       state: latest
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
