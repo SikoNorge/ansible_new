@@ -245,3 +245,70 @@ Paste the following code in:
 
 Just watch this youtube video:
 [Getting started with Ansible 12 - Managing Services](https://youtu.be/soeBHGAMkoQ?list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70)  
+
+
+## Adding Users
+
+Go into your [Playbook](#Playbook) and add the following command:  
+
+	- hosts: all
+ 	  become: true
+    	  tasks:
+       	  - name: create user (user)
+	    tags: always
+     	    user:
+	      name: siko
+       	      groups: root
+	      
+	  - name: add ssh key for siko
+	    tags: always
+    	    authorized_key:
+     	      user: siko
+      	      key: "(your ssh key)"
+
+   	  - name: add sudoers file for siko
+      	    tags: always
+	    copy:
+     	      src: sudoer_siko
+	      dest: /etc/sudoers.d/siko
+       	      owner: root
+	      group: root
+
+!DONT MESS UP IT WILL BE VERY PROBLAMATIC TO RESET THIS ON SERVER!
+---
+In case you forgot how to copy the ssh key click here: [Set up SSH-Key](https://github.com/ProjectDean/ansible_test#set-up-ssh-keys)  
+  
+Now go into your files folder `cd files` and add a new file `nano sudoer_siko`  
+
+Write in it: `siko ALL=(ALL) NOPASSWD: ALL`  
+Add in `ansible.cfg`, `remote_user = siko`  
+
+After setting this up you don't have to write  
+`ansible-playbook --ask-become-pass install_apache.yml`  
+you can shorten it by  
+`ansible-playbook install_apache.yml`
+
+## Bootstrap the User
+
+Now we copy the `install_apache.yml` to a `bootstrap.yml`  
+`cp install_apache.yml bootstrap.yml`  
+You can delete in the `install_apache.yml` it was only for show purpose  
+
+	- name: create user (user)
+	    tags: always
+     	    user:
+	      name: siko
+       	      groups: root
+
+and
+
+	- name: add sudoers file for siko
+   	  tags: always
+   	  copy:
+    	    src: sudoer_siko
+     	    dest: /etc/sudoers.d/siko
+    	    owner: root
+     	    group: root
+
+Now everytime you set up new servers you will automaticly add the user `siko` and give  him the authority to connect to the server without a password  
+you only have to wirte the sudo password once. The user can also now use `sudo` arguments.  
